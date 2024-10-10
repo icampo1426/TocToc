@@ -1,5 +1,7 @@
 package com.grupo02.toctoc.controllers;
 
+import com.grupo02.toctoc.DTOs.UserSignup;
+import com.grupo02.toctoc.DTOs.UserUpdate;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
