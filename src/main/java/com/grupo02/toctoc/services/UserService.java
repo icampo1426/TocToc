@@ -19,7 +19,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findUserById(String id) {
+    public Optional<User> findUserById(Long id) {
         return userRepository.findById(id);
     }
 
@@ -27,22 +27,23 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(String id, User userDetails) {
+    public User updateUser(Long id, User userDetails) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setName(userDetails.getName());
-            user.setLastname(userDetails.getLastname());
-            user.setEmail(userDetails.getEmail());
-            user.setProfileImage(userDetails.getProfileImage());
-            user.setBio(userDetails.getBio());
+            if (userDetails.getName() != null) user.setName(userDetails.getName());
+            if (userDetails.getLastname() != null) user.setLastname(userDetails.getLastname());
+            if (userDetails.getProfileImage() != null) user.setProfileImage(userDetails.getProfileImage());
+            if (userDetails.getBannerImage() != null) user.setBannerImage(userDetails.getBannerImage());
+            if (userDetails.getBio() != null) user.setBio(userDetails.getBio());
+            if (userDetails.getGender() != 0) user.setGender(userDetails.getGender());
             return userRepository.save(user);
         } else {
             throw new RuntimeException("Usuario no encontrado");
         }
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 }

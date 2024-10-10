@@ -21,28 +21,42 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         Optional<User> user = userService.findUserById(id);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@RequestBody UserSignup userSignup) {
+        User user = new User();
+        user.setName(userSignup.getName());
+        user.setLastname(userSignup.getLastname());
+        user.setEmail(userSignup.getEmail());
+        // Aquí puedes cifrar la contraseña antes de guardarla
         return userService.createUser(user);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User userDetails) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserUpdate userUpdate) {
+        User user = new User();
+        user.setName(userUpdate.getName());
+        user.setLastname(userUpdate.getLastname());
+        user.setProfileImage(userUpdate.getProfileImage());
+        user.setBannerImage(userUpdate.getBannerImage());
+        user.setBio(userUpdate.getBio());
+        user.setGender(userUpdate.getGender());
         try {
-            return ResponseEntity.ok(userService.updateUser(id, userDetails));
+            return ResponseEntity.ok(userService.updateUser(id, user));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    // Puedes añadir un endpoint de login aquí si es necesario
 }
