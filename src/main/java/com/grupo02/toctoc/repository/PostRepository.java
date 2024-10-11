@@ -5,6 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<Post, String> {
-    Page<Post> findByTitleAuthorLocation(String title, String author, String location, Pageable pageable);
+    Page<Post> findByTitleContainingAndAuthorNameContainingAndLocationContaining(String title, String author, String location, Pageable pageable);
 }
 

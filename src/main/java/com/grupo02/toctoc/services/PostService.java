@@ -28,7 +28,7 @@ public class PostService {
 
     public Map<String, Object> getPosts(String title, String author, String location, Integer limit, Integer offset) {
         PageRequest pageRequest = PageRequest.of(offset / limit, limit);
-        Page<Post> page = postRepository.findByTitleAuthorLocation(title, author, location, pageRequest);
+        Page<Post> page = postRepository.findByTitleContainingAndAuthorNameContainingAndLocationContaining(title, author, location, pageRequest);
 
         List<Post> posts = page.getContent();
         Map<String, Object> response = new HashMap<>();

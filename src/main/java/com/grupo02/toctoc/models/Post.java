@@ -7,11 +7,16 @@ import lombok.Data;
 @Entity
 public class Post {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private String content;
     @ManyToOne
     private User author;
     private String creationDate;
     private String location;
+
+    public String getAuthorName() {
+        return author != null ? author.getName() : null; // Ajusta esto según la propiedad que contenga el nombre del autor
+    }
 }
