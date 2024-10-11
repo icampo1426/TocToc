@@ -16,7 +16,6 @@ public class AddService {
         this.addRepository = addRepository;
     }
 
-/ Obtener todos los anuncios
     public List<Add> getAllAdds() {
         return addRepository.findAll();
     }

@@ -34,7 +34,7 @@ public class UserController {
         user.setName(userSignup.getName());
         user.setLastname(userSignup.getLastname());
         user.setEmail(userSignup.getEmail());
-        // Aquí puedes cifrar la contraseña antes de guardarla
+
         return userService.createUser(user);
     }
 
@@ -60,5 +60,5 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    // Puedes añadir un endpoint de login aquí si es necesario
+
 }
