@@ -1,9 +1,10 @@
 package com.grupo02.toctoc.repository;
-
 import com.grupo02.toctoc.models.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<Post, String> {
-    // Métodos adicionales de búsqueda
+    Page<Post> findByTitleAuthorLocation(String title, String author, String location, Pageable pageable);
 }
 
