@@ -4,7 +4,7 @@ import com.grupo02.toctoc.DTOs.PostCreate;
 import com.grupo02.toctoc.models.Post;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.repository.UserRepository;
-import com.grupo02.toctoc.repository.PostRepository;
+//import com.grupo02.toctoc.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+/*
 @Service
 public class PostService {
     private final PostRepository postRepository;
@@ -54,3 +54,6 @@ public class PostService {
         return postRepository.save(post);
     }
 }
+
+
+ */

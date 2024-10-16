@@ -2,7 +2,7 @@ package com.grupo02.toctoc.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+/*
 @Data
 @Entity
 public class Post {
@@ -15,3 +15,4 @@ public class Post {
     private String creationDate;
     private String location;
 }
+*/
