@@ -1,7 +1,7 @@
 package com.grupo02.toctoc.services;
 
 import com.grupo02.toctoc.DTOs.PostCreate;
-import com.grupo02.toctoc.models.Post;
+//import com.grupo02.toctoc.models.Post;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.repository.UserRepository;
 //import com.grupo02.toctoc.repository.PostRepository;
