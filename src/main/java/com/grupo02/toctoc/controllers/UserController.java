@@ -5,6 +5,7 @@ import com.grupo02.toctoc.DTOs.UserUpdate;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
@@ -34,8 +35,8 @@ public class UserController {
         user.setName(userSignup.getName());
         user.setLastname(userSignup.getLastname());
         user.setEmail(userSignup.getEmail());
-
-        return userService.createUser(user);
+        User savedUser = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser).getBody();
     }
 
     @PutMapping("/{id}")
