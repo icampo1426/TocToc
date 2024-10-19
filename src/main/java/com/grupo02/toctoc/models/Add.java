@@ -2,7 +2,7 @@ package com.grupo02.toctoc.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+/*
 @Data
 @Entity
 public class Add {
@@ -17,3 +17,4 @@ public class Add {
 
 
 }
+*/

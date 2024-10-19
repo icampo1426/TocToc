@@ -2,7 +2,7 @@ package com.grupo02.toctoc.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+/*
 @Data
 @Entity
 public class Post {
@@ -20,3 +20,4 @@ public class Post {
         return author != null ? author.getName() : null; // Ajusta esto según la propiedad que contenga el nombre del autor
     }
 }
+*/
