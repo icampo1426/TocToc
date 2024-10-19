@@ -1,59 +1,71 @@
 package com.grupo02.toctoc.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.grupo02.toctoc.DTOs.PostCreate;
-//import com.grupo02.toctoc.models.Post;
+import com.grupo02.toctoc.models.Post;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.repository.UserRepository;
-//import com.grupo02.toctoc.repository.PostRepository;
+import com.grupo02.toctoc.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Optional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-/*
+
 @Service
 public class PostService {
-    private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository UserRepository) {
-        this.postRepository = postRepository;
-        this.userRepository = UserRepository;
+    private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public String uploadFile(MultipartFile file) throws IOException {
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        return uploadResult.get("url").toString();
     }
 
-    public Map<String, Object> getPosts(String title, String author, String location, Integer limit, Integer offset) {
-        PageRequest pageRequest = PageRequest.of(offset / limit, limit);
-        Page<Post> page = postRepository.findByTitleContainingAndAuthorNameContainingAndLocationContaining(title, author, location, pageRequest);
-
-        List<Post> posts = page.getContent();
-        Map<String, Object> response = new HashMap<>();
-        response.put("total", page.getTotalElements());
-        response.put("limit", limit);
-        response.put("offset", offset);
-        response.put("posts", posts);
-
-        return response;
-    }
-    public Post createPost(PostCreate postCreate) {
-        Long authorId = postCreate.getAuthorId();
-        User author = userRepository.findById(authorId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid author ID"));
-
+    public Post createPost(PostCreate postCreate) throws IOException {
         Post post = new Post();
         post.setTitle(postCreate.getTitle());
         post.setContent(postCreate.getContent());
-        post.setAuthor(author);
-        post.setLocation(postCreate.getLocation());
-        post.setCreationDate(java.time.LocalDateTime.now().toString());
 
+        // Buscar al autor en la base de datos
+        Optional<User> authorOpt = userRepository.findById(postCreate.getAuthorId());
+        if (authorOpt.isPresent()) {
+            post.setAuthor(authorOpt.get());
+        } else {
+            throw new IllegalArgumentException("Autor no encontrado");
+        }
+
+        // Subir imagen y video si existen
+        if (postCreate.getImage() != null && !postCreate.getImage().isEmpty()) {
+            String imageUrl = uploadFile(postCreate.getImage());
+            post.setImageUrl(imageUrl);
+        }
+
+        if (postCreate.getVideo() != null && !postCreate.getVideo().isEmpty()) {
+            String videoUrl = uploadFile(postCreate.getVideo());
+            post.setVideoUrl(videoUrl);
+        }
+
+        // Guardar el post en la base de datos
         return postRepository.save(post);
     }
 }
 
 
- */
+

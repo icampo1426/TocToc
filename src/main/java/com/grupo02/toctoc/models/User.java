@@ -5,7 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
+
+
+import java.util.List;
 
 @Data
 @Entity
@@ -21,4 +23,6 @@ public class User {
     private String bio;
     private int gender;
     private int level = 1;
+    @OneToMany(mappedBy = "author")
+    private List<Post> posts;
 }
