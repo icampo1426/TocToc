@@ -7,6 +7,7 @@ import com.grupo02.toctoc.models.Post;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.repository.UserRepository;
 import com.grupo02.toctoc.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,6 +64,37 @@ public class PostService {
         }
 
         // Guardar el post en la base de datos
+        return postRepository.save(post);
+    }
+
+    @Transactional
+    public void deletePost(Long postId) {
+        postRepository.deleteById(postId);
+    }
+
+    @Transactional
+    public Post updatePost(Long postId, PostCreate postCreate) throws IOException {
+        Optional<Post> postOpt = postRepository.findById(postId);
+        if (!postOpt.isPresent()) {
+            throw new IllegalArgumentException("Post no encontrado");
+        }
+
+        Post post = postOpt.get();
+        post.setTitle(postCreate.getTitle());
+        post.setContent(postCreate.getContent());
+
+        // Subir imagen y video si existen
+        if (postCreate.getImage() != null && !postCreate.getImage().isEmpty()) {
+            String imageUrl = uploadFile(postCreate.getImage());
+            post.setImageUrl(imageUrl);
+        }
+
+        if (postCreate.getVideo() != null && !postCreate.getVideo().isEmpty()) {
+            String videoUrl = uploadFile(postCreate.getVideo());
+            post.setVideoUrl(videoUrl);
+        }
+
+        // Guardar el post actualizado en la base de datos
         return postRepository.save(post);
     }
 }

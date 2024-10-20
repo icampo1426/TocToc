@@ -26,4 +26,26 @@ public class PostController {
             return new ResponseEntity<>("Solicitud inválida. Revisa los datos proporcionados.", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+        try {
+            postService.deletePost(id);
+            return new ResponseEntity<>("Post eliminado con éxito.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al eliminar el post. Verifica que el ID sea correcto.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePost(@PathVariable Long id, @ModelAttribute PostCreate postCreate) {
+        try {
+            Post updatedPost = postService.updatePost(id, postCreate);
+            return new ResponseEntity<>(updatedPost, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al actualizar el post. Revisa los datos proporcionados.", HttpStatus.BAD_REQUEST);
+        }
+    }
 }
