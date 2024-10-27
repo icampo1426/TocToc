@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.grupo02.toctoc.models.dto.LoginPBDTO;
 import com.grupo02.toctoc.repository.rest.pocketbase.login.LoginPBRepository;
-import com.grupo02.toctoc.services.exception.EmailAlreadyUsedException;
 import com.grupo02.toctoc.services.exception.LoginFailException;
 import lombok.extern.slf4j.Slf4j;
 import org.cloudinary.json.JSONObject;
