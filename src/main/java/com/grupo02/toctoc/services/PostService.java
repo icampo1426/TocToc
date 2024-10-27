@@ -1,10 +1,11 @@
 package com.grupo02.toctoc.services;
 
-import com.grupo02.toctoc.DTOs.PostCreate;
+import com.grupo02.toctoc.models.DTOs.PostCreate;
 import com.grupo02.toctoc.models.Post;
 import com.grupo02.toctoc.models.User;
-import com.grupo02.toctoc.repository.UserRepository;
-import com.grupo02.toctoc.repository.PostRepository;
+import com.grupo02.toctoc.repository.db.PostRepository;
+import com.grupo02.toctoc.repository.db.UserRepository;
+//import com.grupo02.toctoc.repository.db.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,31 +14,27 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {
-    private final PostRepository postRepository;
-    private final UserRepository userRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository UserRepository) {
-        this.postRepository = postRepository;
-        this.userRepository = UserRepository;
-    }
+    private PostRepository postRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Map<String, Object> getPosts(String title, String author, String location, Integer limit, Integer offset) {
         PageRequest pageRequest = PageRequest.of(offset / limit, limit);
-        Page<Post> page = postRepository.findByTitleAuthorLocation(title, author, location, pageRequest);
+        //Page<Post> page = postRepository.findByTitleAuthorLocation(title, author, location, pageRequest);
 
-        List<Post> posts = page.getContent();
-        Map<String, Object> response = new HashMap<>();
-        response.put("total", page.getTotalElements());
-        response.put("limit", limit);
-        response.put("offset", offset);
-        response.put("posts", posts);
+        //List<Post> posts = page.getContent();
+        //Map<String, Object> response = new HashMap<>();
+        //response.put("total", page.getTotalElements());
+        //response.put("limit", limit);
+        //response.put("offset", offset);
+        //response.put("posts", posts);
 
-        return response;
+        return null;
     }
     public Post createPost(PostCreate postCreate) {
         Long authorId = postCreate.getAuthorId();

@@ -7,18 +7,27 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
+    private String identityId;
     private String name;
     private String lastname;
     private String email;
-    private String profileImage;
-    private String bannerImage;
+
+    @ManyToOne
+    private FileEntity profileImage;
+    @ManyToOne
+    private FileEntity bannerImage;
+
     private String bio;
-    private int gender;
+
+    private String gender;
+
     private int level = 1;
 }

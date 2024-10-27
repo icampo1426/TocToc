@@ -3,11 +3,15 @@ package com.grupo02.toctoc.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @Entity
 public class Post {
+
     @Id
-    private String id;
+    @GeneratedValue
+    private UUID id;
     private String title;
     private String content;
     @ManyToOne

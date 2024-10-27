@@ -1,6 +1,6 @@
 package com.grupo02.toctoc.controllers;
 
-import com.grupo02.toctoc.DTOs.PostCreate;
+import com.grupo02.toctoc.models.DTOs.PostCreate;
 import com.grupo02.toctoc.models.Post;
 import com.grupo02.toctoc.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/post")
 public class PostController {
 
     @Autowired

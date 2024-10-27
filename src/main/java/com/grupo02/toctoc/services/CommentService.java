@@ -1,15 +1,15 @@
 package com.grupo02.toctoc.services;
 
-import com.grupo02.toctoc.repository.CommentRepository;
+import com.grupo02.toctoc.repository.db.CommentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommentService {
-    private final CommentRepository commentRepository;
 
-    public CommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
+    @Autowired
+    private  CommentRepository commentRepository;
+
 
     // Métodos de lógica empresarial
 }

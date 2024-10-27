@@ -1,4 +1,4 @@
-package com.grupo02.toctoc.DTOs;
+package com.grupo02.toctoc.models.DTOs;
 
 import lombok.Data;
 
@@ -7,7 +7,7 @@ public class UserSignup {
     private String name;
     private String lastname;
     private String email;
-    private String password; // Probablemente quieras cifrar esto
-
+    private String password;
+    private String gender;
 
 }

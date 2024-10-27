@@ -1,4 +1,4 @@
-package com.grupo02.toctoc.DTOs;
+package com.grupo02.toctoc.models.DTOs;
 
 // UserLogin.java
 import lombok.Data;

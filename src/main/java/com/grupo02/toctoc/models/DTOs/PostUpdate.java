@@ -1,13 +1,10 @@
-package com.grupo02.toctoc.DTOs;
-
+package com.grupo02.toctoc.models.DTOs;
 import lombok.Data;
 
 @Data
-public class PostCreate {
+public class PostUpdate {
     private String title;
     private String content;
     private String location;
-    private Long authorId;
-
 
 }

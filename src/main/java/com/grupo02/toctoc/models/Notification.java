@@ -7,6 +7,7 @@ import lombok.Data;
 @Entity
 public class Notification {
     @Id
+    @GeneratedValue
     private String id;
     private String type;
     private String text;
