@@ -36,7 +36,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         req -> req.requestMatchers("/post/**").hasAnyAuthority("ROLE_USER")
                                 .requestMatchers(HttpMethod.GET,"/post" ).permitAll()
-                                .requestMatchers("/users/**").hasAnyAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.POST,"/users").hasAnyAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.PUT,"/users").hasAnyAuthority("ROLE_USER")
                                 .requestMatchers("/users/login").permitAll()
                                 .requestMatchers("/users/signup").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
