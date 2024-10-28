@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,15 +24,10 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getPosts(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String author,
-            @RequestParam(required = false) String location,
-            @RequestParam(defaultValue = "10") Integer limit,
-            @RequestParam(defaultValue = "0") Integer offset) {
+    @GetMapping("/all")
+    public ResponseEntity getPosts() {
 
-        Map<String, Object> response = postService.getPosts(title, author, location, limit, offset);
+        List<Post> response = postService.getPosts();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -34,8 +34,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.httpBasic().disable().csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/post/**").hasAnyAuthority("ROLE_USER")
-                                .requestMatchers(HttpMethod.GET,"/post" ).permitAll()
+                        req -> req.requestMatchers(HttpMethod.POST,"/post/**").hasAnyAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.GET,"/post/all" ).permitAll()
                                 .requestMatchers(HttpMethod.POST,"/users").hasAnyAuthority("ROLE_USER")
                                 .requestMatchers(HttpMethod.PUT,"/users").hasAnyAuthority("ROLE_USER")
                                 .requestMatchers("/users/login").permitAll()

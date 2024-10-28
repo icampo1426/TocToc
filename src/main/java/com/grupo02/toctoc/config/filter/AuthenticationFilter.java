@@ -49,7 +49,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     Optional<User> userdb = userRepository.findByIdentityId(userId);
                     if(userdb.isPresent()){
 
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userdb, "ROLE_USER", Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userdb.get(), "ROLE_USER", Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                         SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -11,5 +11,5 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    // Métodos RESTful, análogos a las especificaciones en OpenAPI
+
 }

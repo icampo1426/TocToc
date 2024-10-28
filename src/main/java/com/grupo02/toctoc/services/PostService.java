@@ -23,8 +23,8 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
-    public Map<String, Object> getPosts(String title, String author, String location, Integer limit, Integer offset) {
-        PageRequest pageRequest = PageRequest.of(offset / limit, limit);
+    public List<Post> getPosts() {
+        //PageRequest pageRequest = PageRequest.of(offset / limit, limit);
         //Page<Post> page = postRepository.findByTitleAuthorLocation(title, author, location, pageRequest);
 
         //List<Post> posts = page.getContent();
@@ -34,7 +34,7 @@ public class PostService {
         //response.put("offset", offset);
         //response.put("posts", posts);
 
-        return null;
+        return postRepository.findAll();
     }
 
     public Post createPost(User user, PostCreate postCreate) {
