@@ -17,7 +17,8 @@ public class Comment {
     @ManyToOne
     private User author;
     private String creationDate;
-
+    @ManyToOne
+    private Post post;
     @ManyToOne
     @Nullable
     private Comment parent;

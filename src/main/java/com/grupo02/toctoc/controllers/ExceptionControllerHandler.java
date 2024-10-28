@@ -3,6 +3,7 @@ package com.grupo02.toctoc.controllers;
 import com.google.gson.Gson;
 import com.grupo02.toctoc.services.exception.EmailAlreadyUsedException;
 import com.grupo02.toctoc.services.exception.LoginFailException;
+import com.grupo02.toctoc.services.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class ControllerHandler {
+public class ExceptionControllerHandler {
 
     @Autowired
     private Gson gson;
@@ -45,6 +46,14 @@ public class ControllerHandler {
             put("error","LoginFailException");
             put("msg", gson.toJson(ex.getMessage()));
         }}, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map> notFoundException(NotFoundException ex, WebRequest request) {
+        return new ResponseEntity<Map>(new HashMap<>() {{
+            put("error","notFoundException");
+            put("msg", gson.toJson(ex.getMessage()));
+        }}, HttpStatus.NOT_FOUND);
     }
 
 }
