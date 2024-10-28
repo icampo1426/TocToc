@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -34,7 +35,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findUserById(Long id) {
+    public Optional<User> findUserById(UUID id) {
         return userRepository.findById(id);
     }
 
@@ -50,7 +51,7 @@ public class UserService {
         return userRepository.save(newuser);
     }
 
-    public User updateUser(Long id, User userDetails) {
+    public User updateUser(UUID id, User userDetails) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -66,7 +67,7 @@ public class UserService {
         }
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(UUID id) {
         userRepository.deleteById(id);
     }
 

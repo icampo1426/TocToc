@@ -36,15 +36,13 @@ public class PostService {
 
         return null;
     }
-    public Post createPost(PostCreate postCreate) {
-        Long authorId = postCreate.getAuthorId();
-        User author = userRepository.findById(authorId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid author ID"));
+
+    public Post createPost(User user, PostCreate postCreate) {
 
         Post post = new Post();
         post.setTitle(postCreate.getTitle());
         post.setContent(postCreate.getContent());
-        post.setAuthor(author);
+        post.setAuthor(user);
         post.setLocation(postCreate.getLocation());
         post.setCreationDate(java.time.LocalDateTime.now().toString());
 

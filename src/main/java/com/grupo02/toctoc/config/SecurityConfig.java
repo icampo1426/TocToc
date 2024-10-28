@@ -2,9 +2,11 @@ package com.grupo02.toctoc.config;
 
 import com.grupo02.toctoc.config.filter.AuthenticationFilter;
 import lombok.AllArgsConstructor;
+import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,13 +34,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.httpBasic().disable().csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/login").permitAll()
-                                .requestMatchers("/post").hasAnyAuthority("ROLE_USER")
-                                //req.requestMatchers("/login").permitAll()
-                                //.requestMatchers("/sign-in").permitAll()
-                                //.requestMatchers("/swagger-ui/**").permitAll()
-                                //.requestMatchers("/v3/api-docs/**").permitAll()
-                                .anyRequest().permitAll())
+                        req -> req.requestMatchers("/post/**").hasAnyAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.GET,"/post" ).permitAll()
+                                .requestMatchers("/users/**").hasAnyAuthority("ROLE_USER")
+                                .requestMatchers("/users/login").permitAll()
+                                .requestMatchers("/users/signup").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .anyRequest().authenticated()
+                )
                 //.authenticationProvider(authenticationProvider)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);;

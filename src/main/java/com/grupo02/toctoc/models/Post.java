@@ -3,6 +3,7 @@ package com.grupo02.toctoc.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -18,4 +19,6 @@ public class Post {
     private User author;
     private String creationDate;
     private String location;
+    @OneToMany
+    private List<FileEntity> file;
 }

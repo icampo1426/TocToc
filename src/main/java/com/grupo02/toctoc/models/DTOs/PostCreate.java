@@ -7,7 +7,5 @@ public class PostCreate {
     private String title;
     private String content;
     private String location;
-    private Long authorId;
-
 
 }

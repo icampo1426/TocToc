@@ -6,6 +6,7 @@ import com.grupo02.toctoc.models.DTOs.UserUpdate;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.models.dto.LoginPBDTO;
 import com.grupo02.toctoc.services.UserService;
+import com.grupo02.toctoc.utils.AuthUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -22,11 +24,18 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping("/search/all")
     @SecurityRequirement(name = "bearer")
     public List<User> getAllUsers() {
         return userService.findAllUsers();
     }
+
+    @PostMapping("/signup")
+    public User createUser(@RequestBody UserSignup userSignup) {
+
+        return userService.createUser(userSignup);
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity loginUser(@RequestBody UserLogin userLogin) {
@@ -36,42 +45,60 @@ public class UserController {
         }});
     }
 
-    @GetMapping("/{id}")
+    /**
+     * @GetMapping("/{id}")
+     * @SecurityRequirement(name = "bearer")
+     * public ResponseEntity<User> getUserById(@PathVariable Long id) {
+     * Optional<User> user = userService.findUserById(id);
+     * return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+     * }
+     */
+
+    @GetMapping("")
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.findUserById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
+    public ResponseEntity<User> getUserById() {
 
-    @PostMapping("/signup")
-    public User createUser(@RequestBody UserSignup userSignup) {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
 
-        return userService.createUser(userSignup);
-    }
-
-    @PutMapping("/{id}")
-    @SecurityRequirement(name = "bearer")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserUpdate userUpdate) {
-        User user = new User();
-        user.setName(userUpdate.getName());
-        user.setLastname(userUpdate.getLastname());
-        //user.setProfileImage(userUpdate.getProfileImage());
-        //user.setBannerImage(userUpdate.getBannerImage());
-        user.setBio(userUpdate.getBio());
-        //user.setGender(userUpdate.getGender());
-        try {
-            return ResponseEntity.ok(userService.updateUser(id, user));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            Optional<User> user = userService.findUserById(userAuth.get().getId());
+            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         }
+        return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
+    @PutMapping("")
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<User> updateUser(@RequestBody UserUpdate userUpdate) {
+
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+
+            User user = new User();
+            user.setName(userUpdate.getName());
+            user.setLastname(userUpdate.getLastname());
+            //user.setProfileImage(userUpdate.getProfileImage());
+            //user.setBannerImage(userUpdate.getBannerImage());
+            user.setBio(userUpdate.getBio());
+            //user.setGender(userUpdate.getGender());
+            try {
+                return ResponseEntity.ok(userService.updateUser(userAuth.get().getId(), user));
+            } catch (RuntimeException e) {
+                return ResponseEntity.notFound().build();
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<Void> deleteUser() {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            userService.deleteUser(userAuth.get().getId());
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 
 }
