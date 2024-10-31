@@ -2,14 +2,17 @@ package com.grupo02.toctoc.services;
 
 import com.grupo02.toctoc.models.DTOs.UserSignup;
 import com.grupo02.toctoc.models.User;
+import com.grupo02.toctoc.models.UserRelationship;
 import com.grupo02.toctoc.models.dto.LoginPBDTO;
 import com.grupo02.toctoc.models.dto.NewUserPBDTO;
 import com.grupo02.toctoc.models.dto.UserPBDTO;
+import com.grupo02.toctoc.repository.db.UserRelationshipRepository;
 import com.grupo02.toctoc.repository.db.UserRepository;
 import com.grupo02.toctoc.repository.rest.pocketbase.createUser.CreateUserPBRepository;
 import com.grupo02.toctoc.repository.rest.pocketbase.login.LoginPBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,9 @@ public class UserService {
 
     @Autowired
     private CreateUserPBRepository createUserPBRepository;
+
+    @Autowired
+    private UserRelationshipRepository userRelationshipRepository;
 
     public LoginPBDTO login(String email, String password) {
         return loginPBRepository.execute(email, password).get();
@@ -66,6 +72,9 @@ public class UserService {
             throw new RuntimeException("Usuario no encontrado");
         }
     }
+    public List<UserRelationship> getAcceptedRelationships(UUID userId) {
+        return userRelationshipRepository.findByRequesterIdAndStatusOrReceiverIdAndStatus(userId, UserRelationship.RelationshipStatus.ACCEPTED, userId, UserRelationship.RelationshipStatus.ACCEPTED);
+    }
 
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
@@ -74,4 +83,42 @@ public class UserService {
     private NewUserPBDTO userToPBuserMapper(UserSignup userSignup){
         return new NewUserPBDTO(userSignup.getName(), userSignup.getLastname(), userSignup.getEmail(), userSignup.getPassword());
     };
+
+    public UserRelationship createRelationship(UUID requesterId, UUID receiverId) {
+        User requester = userRepository.findById(requesterId).orElseThrow(() -> new RuntimeException("Requester not found"));
+        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RuntimeException("Receiver not found"));
+
+        UserRelationship relationship = new UserRelationship();
+        relationship.setRequester(requester);
+        relationship.setReceiver(receiver);
+        relationship.setStatus(UserRelationship.RelationshipStatus.REQUESTED);
+
+        return userRelationshipRepository.save(relationship);
+    }
+    @Transactional
+    public UserRelationship acceptRelationship(UUID relationshipId, UUID userId) {
+        UserRelationship relationship = userRelationshipRepository.findById(relationshipId)
+                .orElseThrow(() -> new RuntimeException("Relationship not found"));
+
+        if (!relationship.getRequester().getId().equals(userId) && !relationship.getReceiver().getId().equals(userId)) {
+            throw new RuntimeException("User is not part of this relationship");
+        }
+
+        relationship.setStatus(UserRelationship.RelationshipStatus.ACCEPTED);
+        return userRelationshipRepository.save(relationship);
+    }
+
+    @Transactional
+    public UserRelationship rejectRelationship(UUID relationshipId, UUID userId) {
+        UserRelationship relationship = userRelationshipRepository.findById(relationshipId)
+                .orElseThrow(() -> new RuntimeException("Relationship not found"));
+
+        if (!relationship.getRequester().getId().equals(userId) && !relationship.getReceiver().getId().equals(userId)) {
+            throw new RuntimeException("User is not part of this relationship");
+        }
+
+        relationship.setStatus(UserRelationship.RelationshipStatus.REJECTED);
+        return userRelationshipRepository.save(relationship);
+    }
+
 }
