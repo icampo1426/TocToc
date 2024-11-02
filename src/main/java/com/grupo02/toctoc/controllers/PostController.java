@@ -47,7 +47,7 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    @PostMapping
+    @PostMapping("/withFiles")
     @SecurityRequirement(name = "bearer")
     public ResponseEntity<Post> createPost(@RequestPart("post") PostCreate postCreate, @RequestPart("files") List<MultipartFile> files) {
         Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
