@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,38 @@ public class UserController {
         return ResponseEntity.ok(new HashMap() {{
             put("token", u.getToken());
         }});
+    }
+
+    @SecurityRequirement(name = "bearer")
+    @PostMapping("/imgProfile")
+    public ResponseEntity imgProfile(@RequestParam("file") MultipartFile file) {
+
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            // Handle file upload and save the profile image
+            // Assuming you have a method in UserService to handle the file upload
+            userService.saveProfileImage(userAuth.get(), file);
+
+            Optional<User> user = userService.findUserById(userAuth.get().getId());
+            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @SecurityRequirement(name = "bearer")
+    @PostMapping("/imgBanner")
+    public ResponseEntity imgBanner(@RequestParam("file") MultipartFile file) {
+
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            // Handle file upload and save the profile image
+            // Assuming you have a method in UserService to handle the file upload
+            userService.saveBannerImage(userAuth.get(), file);
+
+            Optional<User> user = userService.findUserById(userAuth.get().getId());
+            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -112,6 +145,8 @@ public class UserController {
         }
         return ResponseEntity.badRequest().build();
     }
+
+
     @PutMapping("/relationships/{relationshipId}/accept")
     @SecurityRequirement(name = "bearer")
     public UserRelationship acceptRelationship(@PathVariable UUID relationshipId) {

@@ -1,11 +1,15 @@
 package com.grupo02.toctoc.services;
 
 import com.grupo02.toctoc.models.DTOs.UserSignup;
+import com.grupo02.toctoc.models.FileEntity;
+import com.grupo02.toctoc.models.FileType;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.models.UserRelationship;
 import com.grupo02.toctoc.models.dto.LoginPBDTO;
 import com.grupo02.toctoc.models.dto.NewUserPBDTO;
 import com.grupo02.toctoc.models.dto.UserPBDTO;
+import com.grupo02.toctoc.repository.cloudinary.CloudinaryRepository;
+import com.grupo02.toctoc.repository.db.FileEntityRepository;
 import com.grupo02.toctoc.repository.db.UserRelationshipRepository;
 import com.grupo02.toctoc.repository.db.UserRepository;
 import com.grupo02.toctoc.repository.rest.pocketbase.createUser.CreateUserPBRepository;
@@ -13,6 +17,7 @@ import com.grupo02.toctoc.repository.rest.pocketbase.login.LoginPBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +37,12 @@ public class UserService {
 
     @Autowired
     private UserRelationshipRepository userRelationshipRepository;
+
+    @Autowired
+    private CloudinaryRepository cloudinaryRepository;
+
+    @Autowired
+    private FileEntityRepository fileEntityRepository;
 
     public LoginPBDTO login(String email, String password) {
         return loginPBRepository.execute(email, password).get();
@@ -119,6 +130,39 @@ public class UserService {
 
         relationship.setStatus(UserRelationship.RelationshipStatus.REJECTED);
         return userRelationshipRepository.save(relationship);
+    }
+
+    @Transactional
+    public void saveProfileImage(User user, MultipartFile file) {
+
+        String url =cloudinaryRepository.savePhoto(user.getId().toString(), file);
+        FileEntity profileImg= new FileEntity();
+        profileImg.setName(user.getId().toString());
+        profileImg.setType(FileType.IMAGE);
+        profileImg.setUri(url);
+        fileEntityRepository.save(profileImg);
+        user.setProfileImage(profileImg);
+        userRepository.saveAndFlush(user);
+        // Implement the logic to save the profile image
+        // For example, save the file to a storage service and update the user's profile image URL
+
+    }
+
+
+    @Transactional
+    public void saveBannerImage(User user, MultipartFile file) {
+
+        String url = cloudinaryRepository.savePhoto(user.getId().toString(), file);
+        FileEntity profileImg= new FileEntity();
+        profileImg.setName(user.getId().toString());
+        profileImg.setType(FileType.IMAGE);
+        profileImg.setUri(url);
+        fileEntityRepository.save(profileImg);
+        user.setBannerImage(profileImg);
+        userRepository.saveAndFlush(user);
+        // Implement the logic to save the profile image
+        // For example, save the file to a storage service and update the user's profile image URL
+
     }
 
 }
