@@ -32,6 +32,19 @@ public class PostController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/my-friends")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<List<Post>> getPostsByMyFriends() {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+
+        if (userAuth.isPresent()) {
+            List<Post> response = postService.getPostsByMyFriends(userAuth.get().getId());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
     @PostMapping
     @SecurityRequirement(name = "bearer")
     public ResponseEntity<Post> createPost(@RequestBody PostCreate postCreate) {

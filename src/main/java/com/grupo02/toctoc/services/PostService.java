@@ -1,10 +1,7 @@
 package com.grupo02.toctoc.services;
 
+import com.grupo02.toctoc.models.*;
 import com.grupo02.toctoc.models.DTOs.PostCreate;
-import com.grupo02.toctoc.models.FileEntity;
-import com.grupo02.toctoc.models.FileType;
-import com.grupo02.toctoc.models.Post;
-import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.repository.cloudinary.CloudinaryRepository;
 import com.grupo02.toctoc.repository.db.FileEntityRepository;
 import com.grupo02.toctoc.repository.db.PostRepository;
@@ -20,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -47,6 +46,26 @@ public class PostService {
 
         return postRepository.findAll();
     }
+
+    public List<Post> getPostsByMyFriends(UUID userId) {
+        // Fetch the user
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Get the list of friends
+        List<UUID> friendIds = user.getSentRequests().stream()
+                .filter(relationship -> relationship.getStatus() == UserRelationship.RelationshipStatus.ACCEPTED)
+                .map(relationship -> relationship.getReceiver().getId())
+                .collect(Collectors.toList());
+
+        friendIds.addAll(user.getReceivedRequests().stream()
+                .filter(relationship -> relationship.getStatus() == UserRelationship.RelationshipStatus.ACCEPTED)
+                .map(relationship -> relationship.getRequester().getId())
+                .collect(Collectors.toList()));
+
+        // Fetch posts from friends
+        return postRepository.findByAuthorIdIn(friendIds);
+    }
+
 
     public Post createPost(User user, PostCreate postCreate) {
 
