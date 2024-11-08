@@ -1,11 +1,12 @@
-package com.grupo02.toctoc.repository.rest.pocketbase.login.impl;
+package com.grupo02.toctoc.repository.rest.pocketbase.resetPassword.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.grupo02.toctoc.models.dto.LoginPBDTO;
-import com.grupo02.toctoc.repository.rest.pocketbase.login.LoginPBRepository;
+import com.grupo02.toctoc.repository.rest.pocketbase.resetPassword.ResetPassword;
 import com.grupo02.toctoc.services.exception.LoginFailException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class LoginPBRepositoryImpl implements LoginPBRepository {
+public class ResetPasswordImpl implements ResetPassword {
 
     @Autowired
     private Gson gson;
@@ -30,9 +31,9 @@ public class LoginPBRepositoryImpl implements LoginPBRepository {
      * @param password
      * @return
      */
-    public Optional<LoginPBDTO> execute(String user, String password) {
+    public void execute(String email) {
 
-        String url = "https://pocketbase-production-a64c.up.railway.app/api/collections/users/auth-with-password";
+        String url = "https://pocketbase-production-a64c.up.railway.app/api/collections/users/request-password-reset";
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -42,8 +43,7 @@ public class LoginPBRepositoryImpl implements LoginPBRepository {
 
 
         JSONObject personJsonObject = new JSONObject();
-        personJsonObject.put("identity", user);
-        personJsonObject.put("password", password);
+        personJsonObject.put("email", email);
 
         HttpEntity<String> request =
                 new HttpEntity<>(personJsonObject.toString(),headers);
@@ -54,7 +54,6 @@ public class LoginPBRepositoryImpl implements LoginPBRepository {
             ResponseEntity<String> responseEntityStr = restTemplate
                     .exchange(url, HttpMethod.POST, request, String.class);
 
-            return Optional.of(gson.fromJson(responseEntityStr.getBody(), LoginPBDTO.class));
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             // Capturar el status code y el body del error
             HttpStatus statusCode = (HttpStatus) e.getStatusCode();
@@ -66,7 +65,6 @@ public class LoginPBRepositoryImpl implements LoginPBRepository {
         } catch (Exception e) {
             log.error("An unexpected error occurred: {}", e.getMessage());
         }
-        return Optional.empty();
+        log.info("reset password email sent to: " + email + " successfully");
     }
-
 }

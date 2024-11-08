@@ -6,6 +6,7 @@ import com.grupo02.toctoc.models.DTOs.UserUpdate;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.models.UserRelationship;
 import com.grupo02.toctoc.models.dto.LoginPBDTO;
+import com.grupo02.toctoc.repository.rest.pocketbase.resetPassword.ResetPassword;
 import com.grupo02.toctoc.services.UserService;
 import com.grupo02.toctoc.utils.AuthUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +27,20 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ResetPassword resetPasswordService;
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@RequestBody ResetPasswordDTO email) {
+        userService.findByEmail(email.email)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        this.resetPasswordService.execute(email.email);
+    }
+
+    public record ResetPasswordDTO(String email) {
+    }
 
     @GetMapping("/search/all")
     @SecurityRequirement(name = "bearer")

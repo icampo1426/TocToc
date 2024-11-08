@@ -48,6 +48,10 @@ public class UserService {
         return loginPBRepository.execute(email, password).get();
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }

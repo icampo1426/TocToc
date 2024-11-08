@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET,"/post/all" ).permitAll()
                                 .requestMatchers(HttpMethod.POST,"/comments" ).hasAnyAuthority("ROLE_USER")
                                 .requestMatchers(HttpMethod.POST,"/users").hasAnyAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.POST,"/users/reset-password").permitAll()
                                 .requestMatchers(HttpMethod.PUT,"/users").hasAnyAuthority("ROLE_USER")
                                 .requestMatchers("/users/login").permitAll()
                                 .requestMatchers("/users/signup").permitAll()
