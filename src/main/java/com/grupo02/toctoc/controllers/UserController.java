@@ -6,9 +6,12 @@ import com.grupo02.toctoc.models.DTOs.UserUpdate;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.models.UserRelationship;
 import com.grupo02.toctoc.models.dto.LoginPBDTO;
+import com.grupo02.toctoc.repository.rest.pocketbase.refresh.RefreshToken;
 import com.grupo02.toctoc.repository.rest.pocketbase.resetPassword.ResetPassword;
 import com.grupo02.toctoc.services.UserService;
 import com.grupo02.toctoc.utils.AuthUtils;
+import com.grupo02.toctoc.utils.JWTUtils;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +33,9 @@ public class UserController {
 
     @Autowired
     private ResetPassword resetPasswordService;
+
+    @Autowired
+    private RefreshToken refreshToken;
 
     @PostMapping("/reset-password")
     public void resetPassword(@RequestBody ResetPasswordDTO email) {
@@ -57,10 +63,30 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity loginUser(@RequestBody UserLogin userLogin) {
+
         LoginPBDTO u = userService.login(userLogin.getEmail(), userLogin.getPassword());
+        String refresh = JWTUtils.generateToken(userLogin.getEmail(), u.getToken(), u.getRecord().getId());
+
         return ResponseEntity.ok(new HashMap() {{
             put("token", u.getToken());
+            put("refreshToken", refresh);
         }});
+
+    }
+
+    @PostMapping("/refresh")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity refresh(@RequestHeader("Authorization") String jwt) {
+
+        Claims refresh = JWTUtils.deserializeToken(jwt);
+        String newtoken = refreshToken.execute(refresh.get("lastToken").toString()).get().getToken();
+        String newRefresh = JWTUtils.generateToken(refresh.get("email").toString(), newtoken, refresh.get("identity_id").toString());
+
+        return ResponseEntity.ok(new HashMap() {{
+            put("token", newtoken);
+            put("refreshToken", newRefresh);
+        }});
+
     }
 
     @SecurityRequirement(name = "bearer")
