@@ -75,10 +75,9 @@ public class UserController {
     }
 
     @PostMapping("/refresh")
-    @SecurityRequirement(name = "bearer")
     public ResponseEntity refresh(@RequestHeader("Authorization") String jwt) {
 
-        Claims refresh = JWTUtils.deserializeToken(jwt);
+        Claims refresh = JWTUtils.deserializeToken(jwt.replace("Bearer ", ""));
         String newtoken = refreshToken.execute(refresh.get("lastToken").toString()).get().getToken();
         String newRefresh = JWTUtils.generateToken(refresh.get("email").toString(), newtoken, refresh.get("identity_id").toString());
 
