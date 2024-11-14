@@ -60,13 +60,17 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    @PostMapping("/withFiles")
+    @PostMapping(value = "/withFiles",consumes = {"multipart/form-data"})
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity<Post> createPost(@RequestPart("post") PostCreate postCreate, @RequestPart("files") List<MultipartFile> files) {
+    public ResponseEntity<Post> createPost(@RequestPart("file") List<MultipartFile> file,
+                                           @RequestPart String  title,
+                                           @RequestPart String  content,
+                                           @RequestPart String  location) {
         Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
 
+
         if (userAuth.isPresent()) {
-            Post newPost = postService.createPost(userAuth.get(), postCreate, files);
+            Post newPost = postService.createPost(userAuth.get(), new PostCreate(title,content,location), file);
             return new ResponseEntity<>(newPost, HttpStatus.CREATED);
         }
 

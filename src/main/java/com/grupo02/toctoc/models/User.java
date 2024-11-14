@@ -40,4 +40,13 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<UserRelationship> receivedRequests;
-}
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                ", sentRequests=" + (sentRequests != null ? sentRequests.size() : "null") +
+                ", receivedRequests=" + (receivedRequests != null ? receivedRequests.size() : "null") +
+                '}';
+    }}

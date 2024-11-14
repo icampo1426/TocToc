@@ -2,9 +2,11 @@ package com.grupo02.toctoc.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.UUID;
 
+@ToString
 @Data
 @Entity
 public class UserRelationship {
@@ -25,5 +27,14 @@ public class UserRelationship {
         REQUESTED,
         ACCEPTED,
         REJECTED
+    }
+
+    @Override
+    public String toString() {
+        return "UserRelationship{" +
+                "id=" + id +
+                ", requester=" + (requester != null ? requester.getEmail() : "null") +
+                ", receiver=" + (receiver != null ? receiver.getEmail() : "null") +
+                '}';
     }
 }

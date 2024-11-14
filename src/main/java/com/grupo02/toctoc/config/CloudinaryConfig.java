@@ -12,13 +12,11 @@ import java.util.Map;
 public class CloudinaryConfig {
 
     @Bean
-    public Cloudinary cloudinary(@Value("cloudinary.name") String name,
-                                 @Value("cloudinary.api.key") String apiKey,
-                                 @Value("cloudinary.api.secret") String apiSecret) {
-        Map config = ObjectUtils.asMap(
-                "cloud_name", name,
-                "api_key", apiKey,
-                "api_secret", apiSecret);
-        return new Cloudinary(config);
+    public Cloudinary cloudinaryInit(){
+        return new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", "duveiypiy",
+                "api_key", "288534564715758",
+                "api_secret", "3U0DCsxHmHHtsuDDK12O4ki9IRQ",
+                "secure", true));
     }
 }
