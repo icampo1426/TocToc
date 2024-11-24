@@ -3,6 +3,7 @@ package com.grupo02.toctoc.services;
 import com.grupo02.toctoc.models.*;
 import com.grupo02.toctoc.models.DTOs.PostCreate;
 import com.grupo02.toctoc.repository.cloudinary.CloudinaryRepository;
+import com.grupo02.toctoc.repository.db.CommentRepository;
 import com.grupo02.toctoc.repository.db.FileEntityRepository;
 import com.grupo02.toctoc.repository.db.PostRepository;
 import com.grupo02.toctoc.repository.db.UserRepository;
@@ -28,6 +29,9 @@ public class PostService {
     private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
     @Autowired
     private CloudinaryRepository cloudinaryRepository;
 
@@ -75,6 +79,17 @@ public class PostService {
 
     public Post createPost(User user, PostCreate postCreate) {
 
+        int cantPost = postRepository.countByAuthor(user);
+        int cantComment = commentRepository.countByAuthor(user);
+
+        if (cantPost == 2) {
+            user.setLevel(2);
+        } else if (cantPost == 4) {
+            user.setLevel(3);
+        } else if (cantPost >= 4 && cantComment >= 4) {
+            user.setLevel(4);
+        }
+
         Post post = new Post();
         post.setTitle(postCreate.getTitle());
         post.setContent(postCreate.getContent());
@@ -95,9 +110,9 @@ public class PostService {
         post.setLocation(postCreate.getLocation());
         post.setCreationDate(java.time.LocalDateTime.now().toString());
 
-        List<FileEntity> filesUpload = files.stream().map(f->{
+        List<FileEntity> filesUpload = files.stream().map(f -> {
             String url = cloudinaryRepository.savePhoto(user.getId().toString(), f);
-            FileEntity filePost= new FileEntity();
+            FileEntity filePost = new FileEntity();
             filePost.setName(user.getId().toString());
             filePost.setType(FileType.IMAGE);
             filePost.setUri(url);

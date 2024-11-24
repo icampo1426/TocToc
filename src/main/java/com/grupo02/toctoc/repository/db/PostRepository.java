@@ -1,5 +1,6 @@
 package com.grupo02.toctoc.repository.db;
 import com.grupo02.toctoc.models.Post;
+import com.grupo02.toctoc.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,6 @@ import java.util.UUID;
 public interface PostRepository extends JpaRepository<Post, UUID> {
     //Page<Post> findByTitleAuthorLocation(String title, String author, String location, Pageable pageable);
     List<Post> findByAuthorIdIn(List<UUID> authorIds);
+    int countByAuthor(User author);
 }
 
