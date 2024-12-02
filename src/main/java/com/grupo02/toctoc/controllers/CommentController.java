@@ -27,7 +27,7 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{postId}")
+    @GetMapping("/{postId}")
     @SecurityRequirement(name = "bearer")
     public ResponseEntity getCommentsByPostId(@RequestParam String postId ) throws NotFoundException {
         User userAuth = AuthUtils.getCurrentAuthUser(User.class).get();
