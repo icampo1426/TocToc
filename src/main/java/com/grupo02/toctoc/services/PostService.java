@@ -76,6 +76,13 @@ public class PostService {
         return postRepository.findByAuthorIdIn(friendIds);
     }
 
+    public List<Post> getMyPost(UUID userId) {
+        // Fetch the user
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Fetch posts from friends
+        return postRepository.findByAuthor(user);
+    }
 
     public Post createPost(User user, PostCreate postCreate) {
 

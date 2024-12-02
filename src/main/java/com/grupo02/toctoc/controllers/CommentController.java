@@ -27,5 +27,13 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{postId}")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity getCommentsByPostId(@RequestParam String postId ) throws NotFoundException {
+        User userAuth = AuthUtils.getCurrentAuthUser(User.class).get();
+        commentService.getByComments(postId);
+        return ResponseEntity.ok().build();
+    }
+
     public record CommentCreate(String comment, UUID postId) {}
 }

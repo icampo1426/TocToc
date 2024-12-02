@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -43,6 +41,8 @@ public class UserService {
 
     @Autowired
     private FileEntityRepository fileEntityRepository;
+    @Autowired
+    private EmailService emailService;
 
     public LoginPBDTO login(String email, String password) {
         return loginPBRepository.execute(email, password).get();
@@ -69,7 +69,14 @@ public class UserService {
         newuser.setEmail(user.getEmail());
         newuser.setIdentityId(userPB.getId());
         newuser.setGender(user.getGender());
-        return userRepository.save(newuser);
+        userRepository.save(newuser);
+
+        Map<String,Object> variable = new HashMap<>();
+        variable.put("name", user.getName());
+
+        emailService.sendHtmlEmail(user.getEmail(), "Bienvenido a Toctoc", "onborading", variable);
+
+        return newuser;
     }
 
     public User updateUser(UUID id, User userDetails) {
