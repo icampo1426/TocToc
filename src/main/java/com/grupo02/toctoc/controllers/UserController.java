@@ -181,8 +181,10 @@ public class UserController {
     public ResponseEntity createRelationship(@PathVariable UUID receiverId) {
         Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
         if (userAuth.isPresent()) {
-            userService.createRelationship(userAuth.get().getId(), receiverId);
-            return ResponseEntity.ok().build();
+            UserRelationship res = userService.createRelationship(userAuth.get().getId(), receiverId);
+            return ResponseEntity.ok(new HashMap<>() {{
+                put("relationshipId", res.getId());
+            }});
         }
         return ResponseEntity.badRequest().build();
     }
