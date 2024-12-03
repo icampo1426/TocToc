@@ -1,5 +1,6 @@
 package com.grupo02.toctoc.controllers;
 
+import com.grupo02.toctoc.models.Comment;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.services.CommentService;
 import com.grupo02.toctoc.services.exception.NotFoundException;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,10 +31,10 @@ public class CommentController {
 
     @GetMapping("/{postId}")
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity getCommentsByPostId(@RequestParam String postId ) throws NotFoundException {
+    public ResponseEntity getCommentsByPostId(@PathVariable String postId ) throws NotFoundException {
         User userAuth = AuthUtils.getCurrentAuthUser(User.class).get();
-        commentService.getByComments(postId);
-        return ResponseEntity.ok().build();
+        List<Comment> comments=commentService.getByComments(postId);
+        return ResponseEntity.ok(comments);
     }
 
     public record CommentCreate(String comment, UUID postId) {}
