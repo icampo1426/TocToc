@@ -38,11 +38,27 @@ public class PostController {
 
     @GetMapping("/my-friends")
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity<List<Post>> getPostsByMyFriends() {
+    public ResponseEntity<List<Post>> getPostsByMyFriends(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
         Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
 
         if (userAuth.isPresent()) {
             List<Post> response = postService.getPostsByMyFriends(userAuth.get().getId());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/my-friends/pages")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<Page<Post>> getPostsByMyFriendspages(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+
+        if (userAuth.isPresent()) {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Post> response = postService.getPostsByMyFriends(userAuth.get().getId(), pageable);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 

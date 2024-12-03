@@ -76,6 +76,25 @@ public class PostService {
         return postRepository.findByAuthorIdIn(friendIds);
     }
 
+    public Page<Post> getPostsByMyFriends(UUID userId, Pageable pageable) {
+        // Fetch the user
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Get the list of friends
+        List<UUID> friendIds = user.getSentRequests().stream()
+                .filter(relationship -> relationship.getStatus() == UserRelationship.RelationshipStatus.ACCEPTED)
+                .map(relationship -> relationship.getReceiver().getId())
+                .collect(Collectors.toList());
+
+        friendIds.addAll(user.getReceivedRequests().stream()
+                .filter(relationship -> relationship.getStatus() == UserRelationship.RelationshipStatus.ACCEPTED)
+                .map(relationship -> relationship.getRequester().getId())
+                .collect(Collectors.toList()));
+
+        // Fetch posts from friends
+        return postRepository.findByAuthorIdIn(friendIds, pageable);
+    }
+
     public List<Post> getMyPost(UUID userId) {
         // Fetch the user
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
