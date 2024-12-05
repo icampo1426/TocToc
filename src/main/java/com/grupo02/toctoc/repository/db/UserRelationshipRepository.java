@@ -10,4 +10,8 @@ import java.util.UUID;
 @Repository
 public interface UserRelationshipRepository extends JpaRepository<UserRelationship, UUID> {
     List<UserRelationship> findByRequesterIdAndStatusOrReceiverIdAndStatus(UUID requesterId, UserRelationship.RelationshipStatus status1, UUID receiverId, UserRelationship.RelationshipStatus status2);
+
+    List<UserRelationship> findByReceiverIdAndStatus(UUID receiverId, UserRelationship.RelationshipStatus status);
+
+    List<UserRelationship> findByRequesterIdAndStatus(UUID requesterId, UserRelationship.RelationshipStatus status);
 }

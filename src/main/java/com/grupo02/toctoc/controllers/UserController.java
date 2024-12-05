@@ -14,6 +14,7 @@ import com.grupo02.toctoc.utils.JWTUtils;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -187,7 +188,6 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
-
     @PutMapping("/relationships/{relationshipId}/accept")
     @SecurityRequirement(name = "bearer")
     public UserRelationship acceptRelationship(@PathVariable UUID relationshipId) {
@@ -206,5 +206,71 @@ public class UserController {
             return userService.rejectRelationship(relationshipId, userAuth.get().getId());
         }
         throw new RuntimeException("User not authenticated");
+    }
+
+    @PostMapping("/follow/{receiverId}")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<String> sendFollowRequest(@PathVariable UUID receiverId) {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            userService.sendFollowRequest(userAuth.get().getId(), receiverId);
+            return ResponseEntity.ok("Follow request sent successfully.");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+    }
+
+    @GetMapping("/follow/requests")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<List<UserRelationship>> getPendingFollowRequests() {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            List<UserRelationship> pendingRequests = userService.getPendingFollowRequests(userAuth.get().getId());
+            return ResponseEntity.ok(pendingRequests);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @GetMapping("/following")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<List<User>> getFollowing() {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            List<User> following = userService.getFollowing(userAuth.get().getId());
+            return ResponseEntity.ok(following);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @GetMapping("/followers")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<List<User>> getFollowers() {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            List<User> followers = userService.getFollowers(userAuth.get().getId());
+            return ResponseEntity.ok(followers);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @PutMapping("/follow/{relationshipId}/accept")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<String> acceptFollowRequest(@PathVariable UUID relationshipId) {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            userService.acceptFollowRequest(relationshipId, userAuth.get().getId());
+            return ResponseEntity.ok("Follow request accepted.");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+    }
+
+    @PutMapping("/follow/{relationshipId}/reject")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<String> rejectFollowRequest(@PathVariable UUID relationshipId) {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            userService.rejectFollowRequest(relationshipId, userAuth.get().getId());
+            return ResponseEntity.ok("Follow request rejected.");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
     }
 }
