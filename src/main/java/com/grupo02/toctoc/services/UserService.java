@@ -156,9 +156,7 @@ public class UserService {
         userRepository.saveAndFlush(user);
         // Implement the logic to save the profile image
         // For example, save the file to a storage service and update the user's profile image URL
-
     }
-
 
     @Transactional
     public void saveBannerImage(User user, MultipartFile file) {
@@ -174,6 +172,76 @@ public class UserService {
         // Implement the logic to save the profile image
         // For example, save the file to a storage service and update the user's profile image URL
 
+    }
+
+    public void sendFollowRequest(UUID requesterId, UUID receiverId) {
+        User requester = userRepository.findById(requesterId).orElseThrow(() -> new RuntimeException("Requester not found"));
+        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RuntimeException("Receiver not found"));
+
+        UserRelationship relationship = new UserRelationship();
+        relationship.setRequester(requester);
+        relationship.setReceiver(receiver);
+        relationship.setStatus(UserRelationship.RelationshipStatus.REQUESTED);
+
+        userRelationshipRepository.save(relationship);
+    }
+
+    public List<UserRelationship> getPendingFollowRequests(UUID userId) {
+        return userRelationshipRepository.findByReceiverIdAndStatus(userId, UserRelationship.RelationshipStatus.REQUESTED);
+    }
+
+    public List<User> getFollowing(UUID userId) {
+        List<UserRelationship> relationships = userRelationshipRepository.findByRequesterIdAndStatus(userId, UserRelationship.RelationshipStatus.ACCEPTED);
+        return relationships.stream().map(UserRelationship::getReceiver).toList();
+    }
+
+    public List<User> getFollowers(UUID userId) {
+        List<UserRelationship> relationships = userRelationshipRepository.findByReceiverIdAndStatus(userId, UserRelationship.RelationshipStatus.ACCEPTED);
+        return relationships.stream().map(UserRelationship::getRequester).toList();
+    }
+
+    @Transactional
+    public void acceptFollowRequest(UUID relationshipId, UUID userId) {
+        UserRelationship relationship = userRelationshipRepository.findById(relationshipId)
+                .orElseThrow(() -> new RuntimeException("Relationship not found"));
+
+        if (!relationship.getReceiver().getId().equals(userId)) {
+            throw new RuntimeException("User is not the receiver of this request");
+        }
+
+        relationship.setStatus(UserRelationship.RelationshipStatus.ACCEPTED);
+        userRelationshipRepository.save(relationship);
+    }
+
+    @Transactional
+    public void rejectFollowRequest(UUID relationshipId, UUID userId) {
+        UserRelationship relationship = userRelationshipRepository.findById(relationshipId)
+                .orElseThrow(() -> new RuntimeException("Relationship not found"));
+
+        if (!relationship.getReceiver().getId().equals(userId)) {
+            throw new RuntimeException("User is not the receiver of this request");
+        }
+
+        relationship.setStatus(UserRelationship.RelationshipStatus.REJECTED);
+        userRelationshipRepository.save(relationship);
+    }
+
+    @Transactional
+    public void removeFollower(UUID userId, UUID followerId) {
+        UserRelationship relationship = userRelationshipRepository
+                .findByReceiverIdAndRequesterIdAndStatus(userId, followerId, UserRelationship.RelationshipStatus.ACCEPTED)
+                .orElseThrow(() -> new RuntimeException("Follower relationship not found"));
+
+        userRelationshipRepository.delete(relationship);
+    }
+
+    @Transactional
+    public void unfollowUser(UUID userId, UUID followingId) {
+        UserRelationship relationship = userRelationshipRepository
+                .findByRequesterIdAndReceiverIdAndStatus(userId, followingId, UserRelationship.RelationshipStatus.ACCEPTED)
+                .orElseThrow(() -> new RuntimeException("Following relationship not found"));
+
+        userRelationshipRepository.delete(relationship);
     }
 
 }
