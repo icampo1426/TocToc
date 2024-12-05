@@ -34,18 +34,24 @@ public class FavoritoController {
         if (userAuth.isPresent()) {
             Favorito favorito = favoriteRepository.findByUser(userAuth.get());
 
+            if (favorito == null) {
+                favorito = new Favorito();
+                favorito.setUser(userAuth.get());
+            }
+
             Post post = postRepository.findById(UUID.fromString(postId)).orElseThrow();
 
-            favorito.getFavoritos().stream().filter(f -> f.getId().equals(postId)).findFirst()
-                    .ifPresentOrElse(
-                            f -> favorito.getFavoritos().remove(f),
-                            () -> favorito.getFavoritos().add(post)
-                    );
+            if (favorito.getFavoritos().contains(post)) {
+                favorito.getFavoritos().remove(post);
+            } else {
+                favorito.getFavoritos().add(post);
+            }
+
+            favoriteRepository.save(favorito);
 
             return ResponseEntity.ok().build();
         }
         throw new RuntimeException("User not authenticated");
-
     }
 
     @GetMapping()
