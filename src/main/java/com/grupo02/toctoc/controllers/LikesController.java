@@ -29,16 +29,23 @@ public class LikesController {
 
     @PostMapping("/{postId}")
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity createPost(@PathVariable String postId) {
+    public ResponseEntity likeToPost(@PathVariable String postId) {
 
         Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
 
-        Post post= postRepository.findById(UUID.fromString(postId)).orElseThrow();
+            Post post = postRepository.findById(UUID.fromString(postId)).orElseThrow();
+            Optional<Like> likeExist=likeRepository.findByPostIdAndUser(post,userAuth.get());
+            if(likeExist.isEmpty()) {
+                Like newlike = Like.builder().postId(post).user(userAuth.get()).build();
 
-        Like newlike= Like.builder().postId(post).user(userAuth.get()).build();
-
-        likeRepository.save(newlike);
-
-        return ResponseEntity.ok().build();
+                likeRepository.save(newlike);
+                return ResponseEntity.ok().build();
+            }else {
+                likeRepository.delete(likeExist.get());
+                return ResponseEntity.ok().build();
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 }
