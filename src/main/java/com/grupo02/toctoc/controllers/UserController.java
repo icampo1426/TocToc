@@ -89,7 +89,7 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "bearer")
-    @PostMapping("/imgProfile")
+    @PostMapping(value = "/imgProfile",consumes = {"multipart/form-data"})
     public ResponseEntity imgProfile(@RequestParam("file") MultipartFile file) {
 
         Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
@@ -105,7 +105,7 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "bearer")
-    @PostMapping("/imgBanner")
+    @PostMapping(value = "/imgBanner",consumes = {"multipart/form-data"})
     public ResponseEntity imgBanner(@RequestParam("file") MultipartFile file) {
 
         Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
