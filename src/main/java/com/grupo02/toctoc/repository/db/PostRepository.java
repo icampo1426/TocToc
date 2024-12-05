@@ -15,6 +15,7 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findByAuthorIdIn(List<UUID> authorIds);
     int countByAuthor(User author);
     List<Post> findByAuthor(User authorId);
+    List<Post> findByAuthor(User author, Pageable pageable);
     Page<Post> findByAuthorIdIn(List<UUID> authorIds, Pageable pageable);
 
 }

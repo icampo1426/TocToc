@@ -56,6 +56,13 @@ public class PostService {
         return postRepository.findAll(pageable);
     }
 
+    public List<Post> getPostsByUserId(UUID userId, Pageable pageable) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return postRepository.findByAuthor(user, pageable);
+    }
+
 
     public List<Post> getPostsByMyFriends(UUID userId) {
         // Fetch the user
