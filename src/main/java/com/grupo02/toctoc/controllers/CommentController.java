@@ -33,7 +33,7 @@ public class CommentController {
     @SecurityRequirement(name = "bearer")
     public ResponseEntity getCommentsByPostId(@PathVariable String postId ) throws NotFoundException {
         User userAuth = AuthUtils.getCurrentAuthUser(User.class).get();
-        List<Comment> comments=commentService.getByComments(postId);
+        List<Comment> comments = commentService.getByComments(postId);
         return ResponseEntity.ok(comments);
     }
 

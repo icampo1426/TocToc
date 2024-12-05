@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "likes")
 @Builder
@@ -12,7 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Like {
     @Id
-    private String id;
+    @GeneratedValue
+    private UUID id;
     @ManyToOne
     private User user;
     @ManyToOne
