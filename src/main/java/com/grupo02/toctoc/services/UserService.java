@@ -72,9 +72,9 @@ public class UserService {
         userRepository.save(newuser);
 
         Map<String,Object> variable = new HashMap<>();
-        variable.put("name", user.getName());
+        variable.put("userName", user.getName());
 
-        emailService.sendHtmlEmail(user.getEmail(), "Bienvenido a Toctoc", "onborading", variable);
+        emailService.sendHtmlEmail(user.getEmail(), "Bienvenido a Toctoc", "onboarding.html", variable);
 
         return newuser;
     }

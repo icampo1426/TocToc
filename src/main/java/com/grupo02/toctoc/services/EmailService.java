@@ -22,9 +22,9 @@ public class EmailService {
     @Autowired
     private TemplateEngine templateEngine;
 
-    public void sendHtmlEmail(String to, String subject, String templateName, Map<String, Object> variables)  {
+    public void sendHtmlEmail(String to, String subject, String templateName, Map<String, Object> variables) {
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = null;
+        MimeMessageHelper helper;
         try {
             helper = new MimeMessageHelper(message, true, "UTF-8");
             Context context = new Context();
@@ -38,8 +38,6 @@ public class EmailService {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-
-
 
         mailSender.send(message);
     }
