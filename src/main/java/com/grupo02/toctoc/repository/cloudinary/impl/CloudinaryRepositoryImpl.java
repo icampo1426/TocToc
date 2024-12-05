@@ -23,23 +23,21 @@ public class CloudinaryRepositoryImpl implements CloudinaryRepository {
     @Override
     public String savePhoto(String fileName, MultipartFile file) {
         Map uploadResult = null;
-/*
+
         log.info(file.getContentType());
-        if(file.getContentType().contains("video")){
+        if(Objects.requireNonNull(file.getContentType()).startsWith("video")){
             Map params = ObjectUtils.asMap(
                     "public_id", "myfolder/mysubfolder/my_dog",
                     "overwrite", true,
                     "resource_type", "video"
             );
             try {
-                uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
+                return cloudinary.uploader().upload(file.getBytes(), params).get("url").toString();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-*/
-
         Map params = ObjectUtils.asMap(
                 "public_id", "myfolder/mysubfolder/my_dog",
                 "overwrite", true,
