@@ -175,38 +175,38 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/users/relationships/{receiverId}")
-    @SecurityRequirement(name = "bearer")
-    public ResponseEntity createRelationship(@PathVariable UUID receiverId) {
-        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
-        if (userAuth.isPresent()) {
-            UserRelationship res = userService.createRelationship(userAuth.get().getId(), receiverId);
-            return ResponseEntity.ok(new HashMap<>() {{
-                put("relationshipId", res.getId());
-            }});
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-    @PutMapping("/relationships/{relationshipId}/accept")
-    @SecurityRequirement(name = "bearer")
-    public UserRelationship acceptRelationship(@PathVariable UUID relationshipId) {
-        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
-        if (userAuth.isPresent()) {
-            return userService.acceptRelationship(relationshipId, userAuth.get().getId());
-        }
-        throw new RuntimeException("User not authenticated");
-    }
-
-    @PutMapping("/relationships/{relationshipId}/reject")
-    @SecurityRequirement(name = "bearer")
-    public UserRelationship rejectRelationship(@PathVariable UUID relationshipId) {
-        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
-        if (userAuth.isPresent()) {
-            return userService.rejectRelationship(relationshipId, userAuth.get().getId());
-        }
-        throw new RuntimeException("User not authenticated");
-    }
+//    @PostMapping("/users/relationships/{receiverId}")
+//    @SecurityRequirement(name = "bearer")
+//    public ResponseEntity createRelationship(@PathVariable UUID receiverId) {
+//        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+//        if (userAuth.isPresent()) {
+//            UserRelationship res = userService.createRelationship(userAuth.get().getId(), receiverId);
+//            return ResponseEntity.ok(new HashMap<>() {{
+//                put("relationshipId", res.getId());
+//            }});
+//        }
+//        return ResponseEntity.badRequest().build();
+//    }
+//
+//    @PutMapping("/relationships/{relationshipId}/accept")
+//    @SecurityRequirement(name = "bearer")
+//    public UserRelationship acceptRelationship(@PathVariable UUID relationshipId) {
+//        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+//        if (userAuth.isPresent()) {
+//            return userService.acceptRelationship(relationshipId, userAuth.get().getId());
+//        }
+//        throw new RuntimeException("User not authenticated");
+//    }
+//
+//    @PutMapping("/relationships/{relationshipId}/reject")
+//    @SecurityRequirement(name = "bearer")
+//    public UserRelationship rejectRelationship(@PathVariable UUID relationshipId) {
+//        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+//        if (userAuth.isPresent()) {
+//            return userService.rejectRelationship(relationshipId, userAuth.get().getId());
+//        }
+//        throw new RuntimeException("User not authenticated");
+//    }
 
     @PostMapping("/follow/{receiverId}")
     @SecurityRequirement(name = "bearer")
