@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/favorite")
@@ -64,6 +63,9 @@ public class FavoritoController {
 
             Favorito favorito = favoriteRepository.findByUser(userAuth.get());
 
+            if(Objects.isNull(favorito)){
+                return ResponseEntity.ok(Collections.EMPTY_LIST);
+            }
             return ResponseEntity.ok(favorito.getFavoritos());
         }
         throw new RuntimeException("User not authenticated");
