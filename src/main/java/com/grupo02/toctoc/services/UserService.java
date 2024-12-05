@@ -157,7 +157,7 @@ public class UserService {
         // Implement the logic to save the profile image
         // For example, save the file to a storage service and update the user's profile image URL
     }
-    
+
     @Transactional
     public void saveBannerImage(User user, MultipartFile file) {
 
@@ -225,4 +225,14 @@ public class UserService {
         relationship.setStatus(UserRelationship.RelationshipStatus.REJECTED);
         userRelationshipRepository.save(relationship);
     }
+
+    @Transactional
+    public void removeFollower(UUID userId, UUID followerId) {
+        UserRelationship relationship = userRelationshipRepository
+                .findByReceiverIdAndRequesterIdAndStatus(userId, followerId, UserRelationship.RelationshipStatus.ACCEPTED)
+                .orElseThrow(() -> new RuntimeException("Follower relationship not found"));
+
+        userRelationshipRepository.delete(relationship);
+    }
+
 }
