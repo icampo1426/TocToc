@@ -120,14 +120,12 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    /**
-     * @GetMapping("/{id}")
-     * @SecurityRequirement(name = "bearer")
-     * public ResponseEntity<User> getUserById(@PathVariable Long id) {
-     * Optional<User> user = userService.findUserById(id);
-     * return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-     * }
-     */
+    @GetMapping("/{id}")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
+        Optional<User> user = userService.findUserById(id);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     @GetMapping("")
     @SecurityRequirement(name = "bearer")
