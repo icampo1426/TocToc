@@ -6,6 +6,7 @@ import com.grupo02.toctoc.models.DTOs.UserUpdate;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.models.UserRelationship;
 import com.grupo02.toctoc.models.dto.LoginPBDTO;
+import com.grupo02.toctoc.repository.db.UserRepository;
 import com.grupo02.toctoc.repository.rest.pocketbase.refresh.RefreshToken;
 import com.grupo02.toctoc.repository.rest.pocketbase.resetPassword.ResetPassword;
 import com.grupo02.toctoc.services.UserService;
@@ -14,6 +15,7 @@ import com.grupo02.toctoc.utils.JWTUtils;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +32,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ResetPassword resetPasswordService;
@@ -207,4 +212,20 @@ public class UserController {
         }
         throw new RuntimeException("User not authenticated");
     }
+
+
+    @GetMapping("/search/name/{name}")
+    public ResponseEntity searchByName(@PathVariable String name) {
+
+            List<User> users = userRepository.findAllByNameContaining(name);
+            return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/search/lastname/{lastname}")
+    public ResponseEntity searchByLastName(@PathVariable String lastname) {
+
+        List<User> users = userRepository.findAllByLastnameContaining(lastname);
+        return ResponseEntity.ok(users);
+    }
+
 }
