@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +36,14 @@ public class CommentController {
         User userAuth = AuthUtils.getCurrentAuthUser(User.class).get();
         List<Comment> comments = commentService.getByComments(postId);
         return ResponseEntity.ok(comments);
+    }
+
+    @GetMapping("/count/{postId}")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity countCommet(@PathVariable String postId ) throws NotFoundException {
+        User userAuth = AuthUtils.getCurrentAuthUser(User.class).get();
+        int count = commentService.count(postId);
+        return ResponseEntity.ok(new HashMap<>(){{put("comments", count);}});
     }
 
     public record CommentCreate(String comment, UUID postId) {}

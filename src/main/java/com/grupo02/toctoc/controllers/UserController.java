@@ -6,6 +6,7 @@ import com.grupo02.toctoc.models.DTOs.UserUpdate;
 import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.models.UserRelationship;
 import com.grupo02.toctoc.models.dto.LoginPBDTO;
+import com.grupo02.toctoc.repository.db.UserRepository;
 import com.grupo02.toctoc.repository.rest.pocketbase.refresh.RefreshToken;
 import com.grupo02.toctoc.repository.rest.pocketbase.resetPassword.ResetPassword;
 import com.grupo02.toctoc.services.UserService;
@@ -31,6 +32,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ResetPassword resetPasswordService;
@@ -295,4 +299,20 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
     }
+
+
+    @GetMapping("/search/name/{name}")
+    public ResponseEntity searchByName(@PathVariable String name) {
+
+            List<User> users = userRepository.findAllByNameContaining(name);
+            return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/search/lastname/{lastname}")
+    public ResponseEntity searchByLastName(@PathVariable String lastname) {
+
+        List<User> users = userRepository.findAllByLastnameContaining(lastname);
+        return ResponseEntity.ok(users);
+    }
+
 }

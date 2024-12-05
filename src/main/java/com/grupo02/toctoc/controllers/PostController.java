@@ -6,7 +6,6 @@ import com.grupo02.toctoc.models.User;
 import com.grupo02.toctoc.services.PostService;
 import com.grupo02.toctoc.utils.AuthUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -113,4 +111,6 @@ public class PostController {
 
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
+
 }

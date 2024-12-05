@@ -42,4 +42,9 @@ public class CommentService {
     public List<Comment> getByComments(String postId) throws NotFoundException {
         return commentRepository.findByPost(postRepository.findById(UUID.fromString(postId)).orElseThrow(() -> new NotFoundException("Post not found")));
     }
+
+    public int count(String postId) throws NotFoundException {
+        return commentRepository.countByPost(postRepository.findById(UUID.fromString(postId)).orElseThrow(() -> new NotFoundException("Post not found")));
+
+    }
 }
