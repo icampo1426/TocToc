@@ -49,4 +49,17 @@ public class User {
                 ", sentRequests=" + (sentRequests != null ? sentRequests.size() : "null") +
                 ", receivedRequests=" + (receivedRequests != null ? receivedRequests.size() : "null") +
                 '}';
-    }}
+    }
+
+    public void recalculateLevel(int totalPosts, int totalComments) {
+        if (totalPosts >= 4 && totalComments >= 4) {
+            this.level = 4;
+        } else if (totalPosts >= 4) {
+            this.level = 3;
+        } else if (totalPosts >= 2) {
+            this.level = 2;
+        } else {
+            this.level = 1;
+        }
+    }
+}

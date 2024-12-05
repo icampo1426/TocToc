@@ -104,18 +104,6 @@ public class PostService {
     }
 
     public Post createPost(User user, PostCreate postCreate) {
-
-        int cantPost = postRepository.countByAuthor(user);
-        int cantComment = commentRepository.countByAuthor(user);
-
-        if (cantPost == 2) {
-            user.setLevel(2);
-        } else if (cantPost == 4) {
-            user.setLevel(3);
-        } else if (cantPost >= 4 && cantComment >= 4) {
-            user.setLevel(4);
-        }
-
         Post post = new Post();
         post.setTitle(postCreate.getTitle());
         post.setContent(postCreate.getContent());
@@ -123,7 +111,15 @@ public class PostService {
         post.setLocation(postCreate.getLocation());
         post.setCreationDate(java.time.LocalDateTime.now().toString());
 
-        return postRepository.save(post);
+        postRepository.save(post);
+
+        int totalPosts = postRepository.countByAuthor(user);
+        int totalComments = commentRepository.countByAuthor(user);
+        user.recalculateLevel(totalPosts, totalComments);
+
+        userRepository.save(user);
+
+        return post;
     }
 
     @Transactional
@@ -150,7 +146,12 @@ public class PostService {
 
         postRepository.save(post);
 
+        int totalPosts = postRepository.countByAuthor(user);
+        int totalComments = commentRepository.countByAuthor(user);
+        user.recalculateLevel(totalPosts, totalComments);
+
+        userRepository.save(user);
+
         return post;
     }
-
 }
