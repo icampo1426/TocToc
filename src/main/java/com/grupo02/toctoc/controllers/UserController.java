@@ -285,4 +285,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
     }
 
+    @DeleteMapping("/following/{followingId}")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<String> unfollowUser(@PathVariable UUID followingId) {
+        Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
+        if (userAuth.isPresent()) {
+            userService.unfollowUser(userAuth.get().getId(), followingId);
+            return ResponseEntity.ok("Unfollowed user successfully.");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+    }
 }

@@ -17,4 +17,6 @@ public interface UserRelationshipRepository extends JpaRepository<UserRelationsh
     List<UserRelationship> findByRequesterIdAndStatus(UUID requesterId, UserRelationship.RelationshipStatus status);
 
     Optional<UserRelationship> findByReceiverIdAndRequesterIdAndStatus(UUID receiverId, UUID requesterId, UserRelationship.RelationshipStatus status);
+
+    Optional<UserRelationship> findByRequesterIdAndReceiverIdAndStatus(UUID requesterId, UUID receiverId, UserRelationship.RelationshipStatus status);
 }

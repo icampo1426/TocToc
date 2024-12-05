@@ -235,4 +235,13 @@ public class UserService {
         userRelationshipRepository.delete(relationship);
     }
 
+    @Transactional
+    public void unfollowUser(UUID userId, UUID followingId) {
+        UserRelationship relationship = userRelationshipRepository
+                .findByRequesterIdAndReceiverIdAndStatus(userId, followingId, UserRelationship.RelationshipStatus.ACCEPTED)
+                .orElseThrow(() -> new RuntimeException("Following relationship not found"));
+
+        userRelationshipRepository.delete(relationship);
+    }
+
 }
