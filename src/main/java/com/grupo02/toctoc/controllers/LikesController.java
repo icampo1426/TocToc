@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,5 +48,14 @@ public class LikesController {
             }
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/count/{postId}")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity count(@PathVariable String postId) {
+
+        int count = likeRepository.countByPostId(postRepository.findById(UUID.fromString(postId)).orElseThrow());
+
+        return ResponseEntity.ok(new HashMap<>(){{put("likes", count);}});
     }
 }

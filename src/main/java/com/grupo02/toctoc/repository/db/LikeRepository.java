@@ -14,4 +14,6 @@ import java.util.UUID;
 public interface LikeRepository  extends JpaRepository<Like, UUID> {
 
     Optional<Like> findByPostIdAndUser(Post post, User userId);
+
+    int countByPostId(Post post);
 }

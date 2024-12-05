@@ -14,4 +14,5 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
     // Métodos adicionales de búsqueda
     int countByAuthor(User user);
     List<Comment> findByPost(Post post);
+    int countByPost(Post post);
 }
