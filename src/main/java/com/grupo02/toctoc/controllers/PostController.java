@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @RestController
@@ -35,6 +36,22 @@ public class PostController {
         Page<Post> response = postService.getPosts(pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/user/{userId}")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<List<Post>> getPostsByUserId(@PathVariable UUID userId,
+                                                       @RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Post> posts = postService.getPostsByUserId(userId, pageable);
+
+        if (posts.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
 
     @GetMapping("/my-friends")
     @SecurityRequirement(name = "bearer")
