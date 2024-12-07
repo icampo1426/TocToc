@@ -13,6 +13,7 @@ import com.grupo02.toctoc.repository.db.FileEntityRepository;
 import com.grupo02.toctoc.repository.db.UserRelationshipRepository;
 import com.grupo02.toctoc.repository.db.UserRepository;
 import com.grupo02.toctoc.repository.rest.pocketbase.createUser.CreateUserPBRepository;
+import com.grupo02.toctoc.repository.rest.pocketbase.deleteUser.DeleteUserPBRepository;
 import com.grupo02.toctoc.repository.rest.pocketbase.login.LoginPBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,9 @@ public class UserService {
 
     @Autowired
     private CreateUserPBRepository createUserPBRepository;
+
+    @Autowired
+    private DeleteUserPBRepository deleteUserPBRepository;
 
     @Autowired
     private UserRelationshipRepository userRelationshipRepository;
@@ -99,7 +103,10 @@ public class UserService {
     }
 
     public void deleteUser(UUID id) {
+        User user = userRepository.findById(id).orElseThrow();
+        deleteUserPBRepository.execute(user.getIdentityId());
         userRepository.deleteById(id);
+
     }
 
     private NewUserPBDTO userToPBuserMapper(UserSignup userSignup){
