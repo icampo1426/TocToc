@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class PostController {
     @GetMapping("/all")
     public ResponseEntity<Page<Post>> getPosts(@RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "creationDate");
         Page<Post> response = postService.getPosts(pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -40,7 +41,7 @@ public class PostController {
     public ResponseEntity<List<Post>> getPostsByUserId(@PathVariable UUID userId,
                                                        @RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "creationDate");
         List<Post> posts = postService.getPostsByUserId(userId, pageable);
 
         if (posts.isEmpty()) {
@@ -72,7 +73,7 @@ public class PostController {
         Optional<User> userAuth = AuthUtils.getCurrentAuthUser(User.class);
 
         if (userAuth.isPresent()) {
-            Pageable pageable = PageRequest.of(page, size);
+            Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "creationDate");
             Page<Post> response = postService.getPostsByMyFriends(userAuth.get().getId(), pageable);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
