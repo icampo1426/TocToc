@@ -250,5 +250,4 @@ public class UserService {
 
         userRelationshipRepository.delete(relationship);
     }
-
 }
